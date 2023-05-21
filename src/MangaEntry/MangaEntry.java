@@ -1,3 +1,5 @@
+package MangaEntry;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -5,26 +7,26 @@ import java.util.Objects;
 
 public class MangaEntry {
 
-    enum Status {
+    public enum Status {
         releasing,
         cancelled,
         finished
     }
-    enum Genre {
+    public enum Genre {
         action,
         drama,
         fantasy,
         mystery
     }
 
-    String title;
-    HashSet<String> altTitles;
-    int numOfChapters;
-    int numOfVolumes;
-    Status status;
-    Date startPublication;
-    Date endPublication;
-    HashSet<Genre> genres;
+    private String title;
+    private HashSet<String> altTitles;
+    private int numOfChapters;
+    private int numOfVolumes;
+    private Status status;
+    private Date startPublication;
+    private Date endPublication;
+    private HashSet<Genre> genres;
 
     public MangaEntry(String title, HashSet<String> altTitles, int numOfChapters, int numOfVolumes, Status status, int startMonth, int startDay, int startYear, int endMonth, int endDay, int endYear, HashSet<Genre> genres) {
         this.setTitle(title);
@@ -160,7 +162,7 @@ public class MangaEntry {
     * Returns a float representing the percentage which the titles match
     * @param entry the entry being compared against
     */
-    float compareTitles(MangaEntry entry) {
+    private float compareTitles(MangaEntry entry) {
 
         if (Objects.equals(this.title, entry.title)) {
             return 100;
@@ -190,8 +192,61 @@ public class MangaEntry {
 
     }
 
-    float compareNumOfChapters(MangaEntry entry) {
+    private float compareNumOfChapters(MangaEntry entry) {
         return (float) Math.min(this.numOfChapters, entry.numOfChapters) / Math.max(this.numOfChapters, entry.numOfChapters);
+    }
+
+    private float compareNumOfVolumes(MangaEntry entry) {
+        return (float) Math.min(this.numOfVolumes, entry.numOfVolumes) / Math.max(this.numOfVolumes, entry.numOfVolumes);
+    }
+
+    private float compareStatus(MangaEntry entry) {
+        if (this.status == entry.status) {
+            return 100;
+        }
+        return 0;
+    }
+
+    private float compareDates(MangaEntry entry) {
+        long diff = Math.abs(this.startPublication.getTime() - entry.startPublication.getTime());
+        long avg = (this.startPublication.getTime() + entry.startPublication.getTime()) / 2;
+
+        return (float) diff / avg;
+    }
+
+    public static void main(String[] args) {
+        String title = "Shingeki no Kyojin";
+
+        Calendar start = Calendar.getInstance();
+        start.set(Calendar.YEAR, 2009);
+        start.set(Calendar.MONTH, Calendar.SEPTEMBER);
+        start.set(Calendar.DAY_OF_MONTH, 9);
+        Date startPublication = start.getTime();
+
+        Calendar end = Calendar.getInstance();
+        end.set(Calendar.YEAR, 2021);
+        end.set(Calendar.MONTH, Calendar.APRIL);
+        end.set(Calendar.DAY_OF_MONTH, 9);
+        Date endPublication = end.getTime();
+
+        MangaEntry first = new MangaEntry();
+        first.setTitle(title);
+        first.setStartPublication(startPublication);
+        MangaEntry second = new MangaEntry();
+        second.setTitle(title);
+        second.setStartPublication(endPublication);
+        System.out.println(second.compareGenres(first));
+    }
+
+    private float compareGenres(MangaEntry entry) {
+        HashSet<Genre> intersection = new HashSet<>(this.genres);
+        intersection.retainAll(entry.genres);
+
+        if (intersection.size() == 0) {
+            return 0;
+        }
+
+        return -999;
     }
 
 }
