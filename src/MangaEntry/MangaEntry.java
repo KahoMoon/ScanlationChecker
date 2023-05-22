@@ -18,9 +18,23 @@ public class MangaEntry {
     }
     public enum Genre {
         action,
+        adventure,
+        comedy,
+        ecchi,
+        horror,
+        mecha,
+        music,
+        psychological,
+        romance,
+        scifi,
+        slice_of_life,
+        sports,
+        supernatural,
+        thriller,
         drama,
         fantasy,
-        mystery
+        mystery,
+
     }
 
     private String title;
@@ -54,56 +68,74 @@ public class MangaEntry {
         this.setGenres(genres);
     }
 
+    /*Returns the title*/
     public String getTitle() {
         return title;
     }
 
+    /*Sets the title
+    * @param titles the title being set to the entry*/
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /*Returns a HashSet of all the alternative titles*/
     public HashSet<String> getAltTitles() {
         return altTitles;
     }
 
+    /*Sets the alternative titles
+    * @param altTitles the alternative titles being set to the entry*/
     public void setAltTitles(HashSet<String> altTitles) {
-        System.out.println(altTitles);
         HashSet<String> altTitlesTemp = new HashSet<>();
         for (String i : altTitles) {
             altTitlesTemp.add(i.toLowerCase());
         }
         this.altTitles = altTitlesTemp;
-        System.out.println(altTitlesTemp);
     }
 
+    /*Returns the number of chapters*/
     public int getNumOfChapters() {
         return numOfChapters;
     }
 
+    /*Sets tbe number of chapters
+    * @param numOfChapters the number of chapters being set to the entry*/
     public void setNumOfChapters(int numOfChapters) {
         this.numOfChapters = numOfChapters;
     }
 
+    /*Returns the number of volumes*/
     public int getNumOfVolumes() {
         return numOfVolumes;
     }
 
+    /*Sets the number of volumes
+    * @param numOfVolumes the number of volumes being set to the entry*/
     public void setNumOfVolumes(int numOfVolumes) {
         this.numOfVolumes = numOfVolumes;
     }
 
+    /*Returns the status*/
     public Status getStatus() {
         return status;
     }
 
+    /*Sets the status
+    * @param status the status being set to the entry*/
     public void setStatus(Status status) {
         this.status = status;
     }
 
+    /*Returns the date which publication started*/
     public Date getStartPublication() {
         return startPublication;
     }
 
+    /*Sets the date which the entry started publication
+    * @param month the month which publication started
+    * @param day the day which publication started
+    * @param year the year which publication started*/
     public void setStartPublication(int month, int day, int year) {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, year);
@@ -112,14 +144,21 @@ public class MangaEntry {
         this.startPublication = cal.getTime();
     }
 
+    /*Sets the date which the entry started publication
+    * @param startPublication the start date being set to the entry*/
     public void setStartPublication(Date startPublication) {
         this.startPublication = startPublication;
     }
 
+    /*Returns the date which publication ended*/
     public Date getEndPublication() {
         return endPublication;
     }
 
+    /*Sets the date which the entry stop publication
+    * @param month the month which publication ended
+    * @param day the day which publication ended
+    * @param year the year which publication ended*/
     public void setEndPublication(int month, int day, int year) {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, year);
@@ -128,19 +167,26 @@ public class MangaEntry {
         this.endPublication = cal.getTime();
     }
 
+    /*Sets the date which the entry ended publication
+    * @param endPublication the end date being set to the entry*/
     public void setEndPublication(Date endPublication) {
         this.endPublication = endPublication;
     }
 
+    /*Return a HashSet containing the genres*/
     public HashSet<Genre> getGenres() {
         return genres;
     }
 
+    /*Sets the genres
+    * @param genres the list of genres being set to the entry*/
     public void setGenres(HashSet<Genre> genres) {
         this.genres = genres;
     }
 
-    public int equalsHelper(Object obj) {
+    /*Returns a float value representing the percent similarity between the entries
+    * @param obj the obj being compared against*/
+    public double equalsHelper(Object obj) {
 
         //https://stackoverflow.com/questions/8180430/how-to-override-equals-method-in-java
 
@@ -167,11 +213,12 @@ public class MangaEntry {
         float genreSimilarity = this.compareGenres(other);
 
 
-        return -99;
+
+        return (titleWeight * titleSimilarity) + (chapterWeight * chapterSimilarity) + (volumeWeight * volumeSimilarity) + (statusWeight * statusSimilarity) + (dateWeight * dateSimilarity) + (genreWeight * genreSimilarity);
     }
 
     /*
-    * Returns a float representing the percentage which the titles match
+    * Returns a float value representing the percentage similarity between the titles
     * @param entry the entry being compared against
     */
     private float compareTitles(MangaEntry entry) {
@@ -181,37 +228,31 @@ public class MangaEntry {
         } else if (this.altTitles.contains(entry.title) || entry.altTitles.contains(this.title)) {
             return 100;
         } else {
-            int numOfMatches = 0;
-            int numOfComparison = 1;
 
-            if (this.altTitles.size() <= entry.altTitles.size()) {
-                for (String i : this.altTitles) {
-                    if (entry.altTitles.contains(i)) {
-                        numOfMatches++;
-                    }
-                    numOfComparison++;
-                }
-            } else {
-                for (String i : entry.altTitles) {
-                    if (this.altTitles.contains(i)) {
-                        numOfMatches++;
-                    }
-                    numOfComparison++;
-                }
-            }
-            return (float) numOfMatches / numOfComparison;
+            HashSet<String> intersection = new HashSet<>(this.altTitles);
+            intersection.retainAll(entry.altTitles);
+            HashSet<String> union = new HashSet<>(this.altTitles);
+            union.addAll(entry.altTitles);
+
+            return 100 * (float) intersection.size() / union.size();
         }
 
     }
 
+    /*Returns a float value representing the percent similarity between the number of chapters
+    * @param entry the entry being compared against*/
     private float compareNumOfChapters(MangaEntry entry) {
-        return (float) Math.min(this.numOfChapters, entry.numOfChapters) / Math.max(this.numOfChapters, entry.numOfChapters);
+        return (float) (Math.min(this.numOfChapters, entry.numOfChapters) / Math.max(this.numOfChapters, entry.numOfChapters) * 100);
     }
 
+    /*Returns a float value representing the percent similarity between the number of volumes
+    * @param entry the entry being compared against*/
     private float compareNumOfVolumes(MangaEntry entry) {
-        return (float) Math.min(this.numOfVolumes, entry.numOfVolumes) / Math.max(this.numOfVolumes, entry.numOfVolumes);
+        return (float) (Math.min(this.numOfVolumes, entry.numOfVolumes) / Math.max(this.numOfVolumes, entry.numOfVolumes) * 100);
     }
 
+    /*Returns a float value representing the percent similarity between the statuses
+    * @param entry the entry being compared against*/
     private float compareStatus(MangaEntry entry) {
         if (this.status == entry.status) {
             return 100;
@@ -219,13 +260,17 @@ public class MangaEntry {
         return 0;
     }
 
+    /*Returns a float value representing the percent similarity between the start/end dates
+    * @param the entry being compared against*/
     private float compareDates(MangaEntry entry) {
         long diff = Math.abs(this.startPublication.getTime() - entry.startPublication.getTime());
         long avg = (this.startPublication.getTime() + entry.startPublication.getTime()) / 2;
 
-        return (float) diff / avg;
+        return (100 - ((float) diff / avg * 100));
     }
 
+    /*Returns a float value representing the percent similarity between the genres using Jaccard similarity
+    * @param entry the entry being compared against*/
     private float compareGenres(MangaEntry entry) {
 
         //#(A intersect B)/#(A union B)
