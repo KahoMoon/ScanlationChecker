@@ -7,6 +7,10 @@ import java.util.Objects;
 
 public class MangaEntry {
 
+    public static void main(String[] args) {
+
+    }
+
     public enum Status {
         releasing,
         cancelled,
@@ -48,10 +52,6 @@ public class MangaEntry {
         this.setStartPublication(startPublication);
         this.setEndPublication(endPublication);
         this.setGenres(genres);
-    }
-
-    public MangaEntry() {
-
     }
 
     public String getTitle() {
@@ -107,7 +107,7 @@ public class MangaEntry {
     public void setStartPublication(int month, int day, int year) {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, year);
-        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.MONTH, month - 1);
         cal.set(Calendar.DAY_OF_MONTH, day);
         this.startPublication = cal.getTime();
     }
@@ -140,7 +140,7 @@ public class MangaEntry {
         this.genres = genres;
     }
 
-    private int equalsHelper(Object obj) {
+    public int equalsHelper(Object obj) {
 
         //https://stackoverflow.com/questions/8180430/how-to-override-equals-method-in-java
 
@@ -151,8 +151,20 @@ public class MangaEntry {
             return 0;
         }
 
+        double titleWeight = 0.20;
+        double chapterWeight = 0.20;
+        double volumeWeight = 0.25;
+        double statusWeight = 0.10;
+        double dateWeight = 0.15;
+        double genreWeight = 0.10;
+
         final MangaEntry other = (MangaEntry) obj;
-        boolean titleMatch = this.title.equals(other.title);
+        float titleSimilarity = this.compareTitles(other);
+        float chapterSimilarity = this.compareNumOfChapters(other);
+        float volumeSimilarity = this.compareNumOfVolumes(other);
+        float statusSimilarity = this.compareStatus(other);
+        float dateSimilarity = this.compareDates(other);
+        float genreSimilarity = this.compareGenres(other);
 
 
         return -99;
@@ -214,39 +226,15 @@ public class MangaEntry {
         return (float) diff / avg;
     }
 
-    public static void main(String[] args) {
-        String title = "Shingeki no Kyojin";
-
-        Calendar start = Calendar.getInstance();
-        start.set(Calendar.YEAR, 2009);
-        start.set(Calendar.MONTH, Calendar.SEPTEMBER);
-        start.set(Calendar.DAY_OF_MONTH, 9);
-        Date startPublication = start.getTime();
-
-        Calendar end = Calendar.getInstance();
-        end.set(Calendar.YEAR, 2021);
-        end.set(Calendar.MONTH, Calendar.APRIL);
-        end.set(Calendar.DAY_OF_MONTH, 9);
-        Date endPublication = end.getTime();
-
-        MangaEntry first = new MangaEntry();
-        first.setTitle(title);
-        first.setStartPublication(startPublication);
-        MangaEntry second = new MangaEntry();
-        second.setTitle(title);
-        second.setStartPublication(endPublication);
-        System.out.println(second.compareGenres(first));
-    }
-
     private float compareGenres(MangaEntry entry) {
+
+        //#(A intersect B)/#(A union B)
         HashSet<Genre> intersection = new HashSet<>(this.genres);
         intersection.retainAll(entry.genres);
+        HashSet<Genre> union = new HashSet<>(this.genres);
+        union.addAll(entry.genres);
 
-        if (intersection.size() == 0) {
-            return 0;
-        }
-
-        return -999;
+        return 100 * (float) intersection.size() / union.size();
     }
 
 }
