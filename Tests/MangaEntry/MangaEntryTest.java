@@ -1,14 +1,12 @@
 package MangaEntry;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MangaEntryTest {
 
@@ -171,8 +169,13 @@ class MangaEntryTest {
         assertEquals(newGenres, first.getGenres());
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     void equalsHelper() {
-
+        //assertEquals(100, first.equalsHelper(second));
+        second.setTitle("sdfgsdfgsdg");
+        HashSet<String> temp = new HashSet<>(second.getAltTitles());
+        temp.remove("snk");
+        second.setAltTitles(temp);
+        assertEquals(96.66666717529297, first.equalsHelper(second));
     }
 }
