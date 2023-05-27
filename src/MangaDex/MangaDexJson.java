@@ -4,20 +4,60 @@ import java.util.Date;
 import java.util.List;
 
 public class MangaDexJson {
-
-    String result;
-    String response;
-
     class Data {
-        String id;
-        String type;
+        class Language {
+            String en;
+            String ru;
+            String ja;
+            String ja_ro;
+            String zh;
+            String zh_hk;
+            String zh_ro;
+            String pt_br;
+            String es;
+            String es_la;
+            String ko_ro;
+        }
+        class Relationship {
+            String id;
+            String type;
+            String related;
+        }
+        class TagAttribute {
+            Language name;
+            Language description;
+            String group;
+            int version;
+        }
+        class TagRelationship {
 
+        }
         class Attribute {
-            String title;
-            List<String> altTitles;
-            List<String> description;
+            class Links {
+                String al;
+                String ap;
+                String bw;
+                String kt;
+                String mu;
+                String nu;
+                String amz;
+                String ebj;
+                String mal;
+                String cdj;
+                String raw;
+                String engtl;
+            }
+            class Tags {
+                String id;
+                String type;
+                TagAttribute attributes;
+                List<TagRelationship> relationships;
+            }
+            Language title;
+            List<Language> altTitles;
+            Language description;
             boolean isLocked;
-            List<String> links;
+            Links links;
             String originalLanguage;
             String lastVolume;
             String lastChapter;
@@ -25,32 +65,27 @@ public class MangaDexJson {
             String status;
             int year;
             String contentRating;
-
-            class Tags {
-
-            }
             Tags tags;
-
             String state;
             boolean chapterNumbersResetOnNewVolume;
-            Date createdAt;
-            Date updatedAt;
+            String createdAt;
+            String updatedAt;
             int version;
             List<String> availableTranslatedLanguages;
             String latestUploadedChapter;
         }
-        Attribute attribute;
-
-        class Relationships {
-            String id;
-            String author;
-            String related;
-        }
-        Relationships relationships;
+        String id;
+        String type;
+        Attribute attributes;
+        List<Relationship> relationships;
     }
+
+    String result;
+    String response;
     List<Data> data;
     int limit;
     int offset;
     int total;
 
 }
+
