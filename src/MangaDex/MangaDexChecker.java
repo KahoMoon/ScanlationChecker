@@ -1,8 +1,6 @@
 package MangaDex;
 
 import MangaEntry.MangaEntry;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
@@ -17,7 +15,7 @@ public class MangaDexChecker {
     public static final String mangaPath = "/manga";
 
     public static void main(String[] args) {
-        getMangaEntry(null);
+        //getMangaEntry(null);
     }
 
     private static String queryParamToString(HashMap<String, String> queryParam) {
@@ -33,40 +31,42 @@ public class MangaDexChecker {
         return res.toString();
     }
 
-    public static MangaEntry getMangaEntry(MangaEntry entry) {
-
-        try {
-            String title = "Shingeki no Kyojin";
-            HashMap<String, String> queryParam = new HashMap<>();
-            queryParam.put("title", title);
-            System.out.println(baseURL + mangaPath + "?" + queryParamToString(queryParam));
-            URL url = new URL(baseURL + mangaPath + "?" + queryParamToString(queryParam));
-            HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.connect();
-            int responseCode = conn.getResponseCode();
-
-            if (responseCode != 200) {
-                throw new RuntimeException("HttpsResponseCode: " + responseCode);
-            } else {
-                String inline = "";
-                Scanner scanner = new Scanner(url.openStream());
-                while (!scanner.hasNext()) {
-                    inline += scanner.next();
-                }
-                scanner.close();
-
-                JsonObject data_obj = JsonParser.parseString(inline).getAsJsonObject();
-                System.out.println(data_obj);
-            }
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return null;
-    }
-
+//    public static JsonObject getJSON() {
+//
+//        try {
+//            String title = "Shingeki no Kyojin";
+//            HashMap<String, String> queryParam = new HashMap<>();
+//            queryParam.put("title", title);
+//            URL url = new URL(baseURL + mangaPath + "?" + queryParamToString(queryParam));
+//            HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+//            conn.setRequestMethod("GET");
+//            conn.connect();
+//            int responseCode = conn.getResponseCode();
+//
+//            if (responseCode != 200) {
+//                throw new RuntimeException("HttpsResponseCode: " + responseCode);
+//            } else {
+//                StringBuilder inline = new StringBuilder();
+//                Scanner scanner = new Scanner(url.openStream());
+//                while (scanner.hasNext()) {
+//                    inline.append(scanner.next());
+//                }
+//                scanner.close();
+//
+//                return JsonParser.parseString(String.valueOf(inline)).getAsJsonObject();
+//            }
+//
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+//
+//    private static MangaEntry JSONToMangaEntry(JsonObject elem) {
+//
+//
+//
+//        return null;
+//    }
 
 
 }
